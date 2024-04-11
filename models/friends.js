@@ -1,14 +1,13 @@
 const {db} = require("./db");
 
-const getMyFriendsList = async(userid) => {
+const getMyFriendsList = async (userId) => {
     let sql = `
-        SELECT f.friendID, f.user2ID as friendUserID, u.nickname 
+        SELECT f.friend_id AS friendID, f.user2_id AS friendUserID, u.nickname 
         FROM friend f
-        JOIN user u
-        ON f.user2ID = u.userID
-        WHERE f.user1ID = ? AND f.accepted = 1;
+        JOIN user u ON f.user2_id = u.user_id
+        WHERE f.user1_id = ? AND f.accepted = 1;
     `;
-    let [rows, fields] = await db.execute(sql, [userid]);
+    let [rows, fields] = await db.execute(sql, [userId]);
     console.log(rows);
     return rows;
 }
@@ -17,10 +16,10 @@ const getNicknamedUserList = async(userid, nickname) => {
     let keyword = '%' + nickname + '%';
     
     let sql = `
-        SELECT u.userID AS userId, u.nickname AS nickname
-        FROM account_book.user u
+        SELECT u.user_id AS userID, u.nickname AS nickname
+        FROM cloudfriend.user u
         WHERE u.nickname LIKE ? 
-        AND u.userID NOT IN (SELECT f.user2ID FROM account_book.friend f WHERE f.user1ID = ? OR f.user2ID = ?);
+        AND u.user_id NOT IN (SELECT f.user2_id FROM cloudfriend.friend f WHERE f.user1_id = ? OR f.user2_id = ?);
     `;
 
     let [rows] = await db.query(sql, [keyword, userid, userid]);
@@ -28,22 +27,22 @@ const getNicknamedUserList = async(userid, nickname) => {
     return rows;
 }
 
-const getReceivedFriendRequestsList = async(userid) => {
+const getReceivedFriendRequestsList = async (userId) => {
     let sql = `
-        SELECT f.friendID as friendID, f.user2ID as userID, u.nickname as nickname
+        SELECT f.friend_id AS friendID, f.user2_id AS userID, u.nickname AS nickname
         FROM friend f
         JOIN user u
-        ON f.user2ID = u.userID
-        WHERE f.user1ID = ? AND f.accepted = 0;
+        ON f.user2_id = u.user_id
+        WHERE f.user1_id = ? AND f.accepted = 0;
     `;
-    let [rows] = await db.execute(sql, [userid]);
+    let [rows] = await db.execute(sql, [userId]);
     console.log(rows);
     return rows;
 }
 
-const postFriendRequest = async(senderID, receiverID) => {
+const postFriendRequest = async (senderID, receiverID) => {
     let sql = `
-        INSERT INTO friend (user1ID, user2ID, accepted) VALUES (?, ?, ?);
+        INSERT INTO friend (user1_id, user2_id, accepted) VALUES (?, ?, ?);
     `;
     
     let conn;
@@ -65,30 +64,30 @@ const postFriendRequest = async(senderID, receiverID) => {
     }
 }
 
-const patchFriendRequest = async(receiverID, senderID) => {
+const patchFriendRequest = async (receiverID, senderID) => {
     let sql = `
-        UPDATE friend f
+        UPDATE friend
         SET accepted = 1
-        WHERE f.user1ID = ? AND f.user2ID = ?;
+        WHERE user1_id = ? AND user2_id = ?;
     `;
     
     let conn;
-    try{
+    try {
         conn = await db.getConnection();
-        await conn.beginTransaction(); //트랜잭션 시작
+        await conn.beginTransaction(); // 트랜잭션 시작
 
         await conn.query(sql, [receiverID, senderID]);
         await conn.query(sql, [senderID, receiverID]);
 
-        await conn.commit(); //트랜잭션 커밋
-
-    }catch (err){
-        await conn.rollback(); //트랜잭션 롤백
+        await conn.commit(); // 트랜잭션 커밋
+    } catch (err) {
+        await conn.rollback(); // 트랜잭션 롤백
         throw err;
-    }finally{
-        if(conn) conn.release(); //커넥션 반환
+    } finally {
+        if (conn) conn.release(); // 커넥션 반환
     }
 }
+
 
 const deleteFriend = async(friendIDs) => {
     console.log(friendIDs);
@@ -115,28 +114,28 @@ const deleteFriend = async(friendIDs) => {
     }
 }
 
-const checkValidUser = async(userid) => {
-    let sql = `SELECT exists(SELECT 1 FROM user u WHERE u.userID LIKE ?) as result;`;
+const checkValidUser = async (userid) => {
+    let sql = `SELECT exists(SELECT 1 FROM user u WHERE u.user_id = ?) as result;`;
     let [rows] = await db.execute(sql, [userid]);
     const result = rows[0].result === 1;
-    //console.log(rows);
     return result;
 }
 
-const getFriendIDs = async(user1ID, user2ID) => {
+
+const getFriendIDs = async (user1ID, user2ID) => {
     let sql = `
-        SELECT f.friendID
+        SELECT f.friend_id
         FROM friend f
-        WHERE f.user1ID = ? AND f.user2ID = ? 
+        WHERE f.user1_id = ? AND f.user2_id = ? 
         UNION
-        SELECT f.friendID
+        SELECT f.friend_id
         FROM friend f
-        WHERE f.user1ID = ? AND f.user2ID = ?;
+        WHERE f.user1_id = ? AND f.user2_id = ?;
     `;
     let [rows] = await db.execute(sql, [user1ID, user2ID, user2ID, user1ID]);
     //console.log(rows);
 
-    const friendIDs = rows.map(row => row.friendID);
+    const friendIDs = rows.map(row => row.friend_id);
     return friendIDs;
 }
 
