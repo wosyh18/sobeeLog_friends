@@ -4,5 +4,5 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
  
-COPY app.js , controllers , joinPost.js , models , package.json , routes , constants , lib ./src/
-CMD npm start
+COPY app.js controllers joinPost.js models package.json routes constants lib ./src/
+CMD ["node", "index.js"]
