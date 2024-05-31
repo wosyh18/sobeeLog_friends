@@ -1,6 +1,7 @@
 const {db} = require("./db");
 const fs = require("fs");
 const http = require("http");
+const userid = require("../controllers/friends/getUserID");
 
 /* 통신이 필요한 부분 = getMyfriendList, getNicknamedUserList,getReceivedFriendRequestsLis, checkValidUser  */
 
