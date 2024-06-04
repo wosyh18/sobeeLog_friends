@@ -1,6 +1,6 @@
 const {db} = require("./db");
 
-/* 통신이 필요한 부분 = getMyfriendList, getNicknamedUserList,getReceivedFriendRequestsLis, checkValidUser  */
+/* 통신이 필요한 부분 = getMyfriendList, getNicknamedUserList, getReceivedFriendRequestsLis, checkValidUser  */
 
 //myFriendsListGET
 const getMyFriendsList = async (userId) => { 
@@ -177,6 +177,5 @@ module.exports = {
     postFriendRequest,
     patchFriendRequest,
     deleteFriend,
-    checkValidUser,
     getFriendIDs,
 }
