@@ -15,6 +15,8 @@ module.exports = {
     NICKNAME_EXIST: '닉네임이 중복되었습니다',
     ACCESS_TOKEN_SUCCESS: 'access token 발급 성공',
 
+    NO_USER: '존재하지 않는 회원입니다.',
+
     //친구
     READ_FRIENDS_LIST_SUCCESS: '친구 목록 조회 성공',
     READ_FIND_USERS_SUCCESS: '사용자 검색 조회 성공',

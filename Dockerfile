@@ -1,8 +1,8 @@
-FROM node:12.18.1-alpine
+FROM node:18.17.0
 
 WORKDIR /usr/src/app
-COPY package*.json ./
+COPY package*.json ./ 
 RUN npm install
- 
-COPY app.js controllers joinPost.js models package.json routes constants lib ./src/
+COPY ./ ./
+
 CMD ["npm", "start"]
