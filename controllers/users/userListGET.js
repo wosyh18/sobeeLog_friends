@@ -1,4 +1,4 @@
-//userID를 
+//user 마이크로 서비스와의 통신
 const http = require("http");
 
 module.exports = async (userID) => {

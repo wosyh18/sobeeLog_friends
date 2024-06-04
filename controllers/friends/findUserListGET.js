@@ -27,7 +27,7 @@ module.exports = async(req, res) => {
         //받은 리스트에서 userID를 추출
         const userIDs = userInfoList.map(user => user.userID);  
         //추출한 userID가 내 frienddb에 user1id나 user2id에 존재하는지 검사하는 역할
-        const userList = await getUserIDInFriend(userIDS);
+        const userList = await getUserIDInFriend(userIDs);
 
         
         const data = {
