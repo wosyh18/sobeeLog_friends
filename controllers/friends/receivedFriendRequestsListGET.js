@@ -11,6 +11,9 @@ param으로 들어온 userid에 대한 info가 아니라 friendList에 userid를
 거기에 맞는 user1id와 accepted가 0인 user2id를 userid로 가져와
 그 후 userListGet(usesrid로 줘)
 
+1. userid를 받아서 
+
+
 */
 
         
@@ -27,15 +30,17 @@ module.exports = async(req, res) => {
         }
         
         const friendsList = await friendsDB.getReceivedFriendRequestsList(userid);
-        if (friendsList.length === 0) {
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.READ_FRIEND_REQUESTS_SUCCESS, { friendsList }));
-        }
+        console.log("dddd", friendsList);
+        // if (friendsList.length === 0) {
+        //     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.READ_FRIEND_REQUESTS_SUCCESS, { friendsList }));
+        // }
 
-        // 친구 요청을 보낸 사용자 정보 가져오기
         for (const friend of friendsList) {
-            const userInfo = await userListGET(friendsList.userID);
-            friend.nickname = userInfo.nickname;  // 친구 요청을 보낸 사용자의 닉네임을 추가
+            const userInfo = await userListGET(friend.userID); // friendUserID를 가져옴
+            console.log("User info: ", userInfo);
+            friend.nickname = userInfo.nickname;
         }
+        
 
         const data = {
             friends: friendsList // 친구 목록 추가(userid, friendid)

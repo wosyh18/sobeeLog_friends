@@ -17,7 +17,7 @@ module.exports = async(req, res) => {
     
         //nickname을 쿼리로 담아서 user 마이크로 서비스에게 통신 요청 (-> getUserID에서 정의한 걸 사용) -> userInfo에서 리스트 형식으로 
         const userInfo = await getUserID(nickname); //nickname을 기반으로 userid 가져와
-        // console.log("userInfoResponse:", userInfo); // 로그 추가
+        console.log("userInfoResponse:", userInfo); // 로그 추가
 
         const userInfoList = userInfo.data.userList;
         
