@@ -13,7 +13,7 @@ spec:
         app: friend
     spec:
       containers:
-      - name: user
+      - name: friend
         image: jihyun2ee/friend:0.1
         ports:
         - containerPort: 8081 # 내부 컨테이너 포트

@@ -2,7 +2,7 @@ const responseMessage = require("../../constants/responseMessage");
 const statusCode = require("../../constants/statusCode");
 const util = require("../../lib/util");
 const checkValidUser = require("./checkValidUser");
-// const getUserID = require("./getUserID");
+const getUserID = require("../users/getUserID");
 const { friendsDB } = require("../../models");
 
 module.exports = async(req, res) => {
