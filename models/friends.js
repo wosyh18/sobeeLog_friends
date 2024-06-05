@@ -1,14 +1,15 @@
 const {db} = require("./db");
 
-/* 통신이 필요한 부분 = getMyfriendList, getNicknamedUserList, getReceivedFriendRequestsLis, checkValidUser  */
+/* 통신이 필요한 부분 = getMyfriendList, getNicknamedUserList,  getReceivedFriendRequestsLis, checkValidUser
+  */
 
 //myFriendsListGET
 const getMyFriendsList = async (userId) => { 
     //주어지는 userId가 user1id라고 보고, 그에 맞는 User2id와 friendid 받아오기.
     let sql = `
-        SELECT f.friend_id AS friendID, f.user2_id AS friendUserID
+        SELECT f.friendID AS friendID, f.user2ID AS friendUserID
         FROM friend f
-        WHERE f.user1_id = ? AND f.accepted = 1;
+        WHERE f.user1ID= ? AND f.accepted = 1;
     `;
     let [rows, fields] = await db.execute(sql, [userId]);
     console.log(rows);
@@ -44,14 +45,14 @@ const getMyFriendsList = async (userId) => {
 // }
 
 //앞 getNicknamedUserlist 대신 getUserIDInFriend 생성함. userid가 
-const getUserIDInFriend = async (userIDs) => {
+const getUserIDInFriend = async (user1ID, user2ID) => {
     let sql = `
-        SELECT user1_id, user2_id
+        SELECT user1ID, user2ID
         FROM friend
-        WHERE user1_id IN (?) OR user2_id IN (?);
+        WHERE user1ID IN (?) OR user2ID IN (?);
     `;
 
-    let [rows] = await db.query(sql, [userIDs, userIDs]);
+    let [rows] = await db.query(sql, [user1ID, user2ID]);
     return rows;
 };
 
@@ -59,9 +60,9 @@ const getUserIDInFriend = async (userIDs) => {
 //receivedFriendRequestsList
 const getReceivedFriendRequestsList = async (userId) => {
     let sql = `
-        SELECT friend_id AS friendID, user1_id AS userID
+        SELECT friendID AS friendID, user1ID AS userID
         FROM friend
-        WHERE user2_id = ? AND accepted = 0;
+        WHERE user2ID = ? AND accepted = 0;
     `;
 
     let [rows] = await db.execute(sql, [userId]);
@@ -72,7 +73,7 @@ const getReceivedFriendRequestsList = async (userId) => {
 //friendRequestPOST
 const postFriendRequest = async (senderID, receiverID) => {
     let sql = `
-        INSERT INTO friend (user1_id, user2_id, accepted) VALUES (?, ?, ?);
+        INSERT INTO friend (user1ID, user2ID, accepted) VALUES (?, ?, ?);
     `;
     
     let conn;
@@ -98,7 +99,7 @@ const patchFriendRequest = async (receiverID, senderID) => {
     let sql = `
         UPDATE friend
         SET accepted = 1
-        WHERE user1_id = ? AND user2_id = ?;
+        WHERE user1Id = ? AND user2ID = ?;
     `;
     
     let conn;
@@ -155,13 +156,13 @@ const deleteFriend = async(friendIDs) => {
 //friendRequestPOST & friendDeletePOST
 const getFriendIDs = async (user1ID, user2ID) => {
     let sql = `
-        SELECT f.friend_id
+        SELECT f.friendID
         FROM friend f
-        WHERE f.user1_id = ? AND f.user2_id = ? 
+        WHERE f.user1ID = ? AND f.user2ID = ? 
         UNION
-        SELECT f.friend_id
+        SELECT f.friendID
         FROM friend f
-        WHERE f.user1_id = ? AND f.user2_id = ?;
+        WHERE f.user1ID = ? AND f.user2ID = ?;
     `;
     let [rows] = await db.execute(sql, [user1ID, user2ID, user2ID, user1ID]);
     //console.log(rows);

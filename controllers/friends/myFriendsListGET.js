@@ -1,7 +1,7 @@
 const responseMessage = require("../../constants/responseMessage");
 const statusCode = require("../../constants/statusCode");
 const util = require("../../lib/util");
-const userListGET = require("../../users/userListGET");
+const userListGET = require("../users/userListGET");
 const { friendsDB } = require("../../models");
 
 
@@ -13,15 +13,16 @@ module.exports = async(req, res) => {
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.NEED_LOGIN));
         }
 
-        const userInfo = await userListGET(userid);
-        const nickname = userInfo.nickname;
-
         //freind.js 중 getMyFriendsList에서 user2id랑 friendid 받아오기
         const friendsList = await friendsDB.getMyFriendsList(userid);
+        
+        for(const friend of friendsList){
+            const userInfo = await userListGET(friendsList.userid);
+            friend.nickname = userInfo.nickname;
+        }
 
         //하나의 리스트로 만들고
         const data = {
-            nickname: nickname, // 닉네임 추가
             friendsList: friendsList // 친구 목록 추가(userid, friendid)
         };
 
