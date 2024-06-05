@@ -18,7 +18,6 @@ module.exports = async(req, res) => {
         //nickname을 쿼리로 담아서 user 마이크로 서비스에게 통신 요청 (-> getUserID에서 정의한 걸 사용) -> userInfo에서 리스트 형식으로 
         const userInfo = await getUserID(nickname); //nickname을 기반으로 userid 가져와
         console.log("userInfoResponse:", userInfo); // 로그 추가
-
         const userInfoList = userInfo.data.userList;
         
         //받은 userInfoList가 없거나 빈 배열로 주어지면
@@ -27,15 +26,18 @@ module.exports = async(req, res) => {
         }
         //받은 리스트에서 userID를 추출
         //추출한 userID가 내 frienddb에 user1id나 user2id에 존재하는지 검사하는 역할
-
+        
         for (let i = 0; i < userInfoList.length; i++) {
-            const userIDsearch = await friendsDB.getUserIDInFriend(userId, userInfoList[i].userId);;
+            const userIDsearch = await friendsDB.getUserIDInFriend(userId, userInfoList[i].userId);
+            console.log(`Checking userId ${userInfoList[i].userId} in friendsDB for userId ${userId}:`, userIDsearch);
+
+            // userIDsearch가 존재하면 해당 userInfoList 요소를 제거
             if (userIDsearch && userIDsearch.length > 0) {
                 userInfoList.splice(i, 1);
-                i--; // 배열이 조정되었으므로 다음 인덱스를 다시 확인해야함. 
+                i--; // 배열이 조정되었으므로 다음 인덱스를 다시 확인해야함
             }
         }
-        
+
         const data = {
             userList: userInfoList
         };
