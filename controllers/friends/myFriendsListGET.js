@@ -4,6 +4,10 @@ const util = require("../../lib/util");
 const userListGET = require("../users/userListGET");
 const { friendsDB } = require("../../models");
 
+/*
+1. userid 받아온 거를 friendsDB.getMyFriendsList(userid)로 담아서 넘겨준다.
+ */
+
 
 module.exports = async(req, res) => {
     try{
@@ -15,11 +19,16 @@ module.exports = async(req, res) => {
 
         //freind.js 중 getMyFriendsList에서 user2id랑 friendid 받아오기
         const friendsList = await friendsDB.getMyFriendsList(userid);
-        
-        for(const friend of friendsList){
-            const userInfo = await userListGET(friendsList.userid);
+        console.log("ff: ", friendsList);
+
+    
+        for (const friend of friendsList) {
+            const userInfo = await userListGET(friend.friendUserID); // friendUserID를 가져옴
+            // console.log("User info: ", userInfo);
             friend.nickname = userInfo.nickname;
         }
+
+
 
         //하나의 리스트로 만들고
         const data = {
