@@ -44,18 +44,17 @@ const getMyFriendsList = async (userId) => {
 //     return rows;
 // }
 
-//앞 getNicknamedUserlist 대신 getUserIDInFriend 생성함. userid가 
+//앞 getNicknamedUserlist 대신 getUserIDInFriend 생성함. userid가 user1과 user2에 있는지 확인해야.
 const getUserIDInFriend = async (user1ID, user2ID) => {
     let sql = `
         SELECT user1ID, user2ID
         FROM friend
-        WHERE user1ID IN (?) OR user2ID IN (?);
+        WHERE (user1ID = ? AND user2ID = ?)
+           OR (user1ID = ? AND user2ID = ?);
     `;
-
-    let [rows] = await db.query(sql, [user1ID, user2ID]);
+    let [rows] = await db.query(sql, [user1ID, user2ID, user2ID, user1ID]);
     return rows;
 };
-
 
 //receivedFriendRequestsList
 const getReceivedFriendRequestsList = async (userId) => {
