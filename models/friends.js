@@ -61,7 +61,7 @@ const getReceivedFriendRequestsList = async (userId) => {
     let sql = `
         SELECT friendID AS friendID, user1ID AS userID
         FROM friend
-        WHERE user2ID = ? AND accepted = 0;
+        WHERE user2ID = ? AND (accepted = 0 OR accepted = 2);
     `;
 
     let [rows] = await db.execute(sql, [userId]);
@@ -157,16 +157,13 @@ const getFriendIDs = async (user1ID, user2ID) => {
     let sql = `
         SELECT f.friendID
         FROM friend f
-        WHERE f.user1ID = ? AND f.user2ID = ? 
-        UNION
-        SELECT f.friendID
-        FROM friend f
-        WHERE f.user1ID = ? AND f.user2ID = ?;
+        WHERE (f.user1ID = ? AND f.user2ID = ?)
+        OR (f.user1ID = ? AND f.user2ID = ?);
     `;
     let [rows] = await db.execute(sql, [user1ID, user2ID, user2ID, user1ID]);
     //console.log(rows);
 
-    const friendIDs = rows.map(row => row.friend_id);
+    const friendIDs = rows.map(row => row.friendID);
     return friendIDs;
 }
 

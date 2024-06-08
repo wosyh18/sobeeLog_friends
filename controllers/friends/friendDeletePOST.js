@@ -22,6 +22,7 @@ module.exports = async(req, res) => {
 
         //INFO: 친구관계Id 찾기
         const friendIDs = await getFriendIDs(user1ID, user2ID);
+        console.log("Friend IDs to delete:", friendIDs);
         if(friendIDs.length == 0){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMessage.NO_FRIEND));
         }
