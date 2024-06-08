@@ -14,7 +14,10 @@ spec:
     spec:
       containers:
       - name: friend
-        image: jihyun2ee/friend:0.1
+        image: jihyun2ee/friend:0.4
+        envFrom:
+        - secretRef:
+            name: friend-secret
         ports:
         - containerPort: 8081 # 내부 컨테이너 포트
         imagePullPolicy: Always
