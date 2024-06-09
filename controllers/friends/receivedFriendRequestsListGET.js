@@ -36,6 +36,7 @@ module.exports = async(req, res) => {
         // }
 
         for (const friend of friendsList) {
+            console.log("userid", friend.userID);
             const userInfo = await userListGET(friend.userID); // friendUserID를 가져옴
             console.log("User info: ", userInfo);
             friend.nickname = userInfo.nickname;

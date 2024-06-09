@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: friend
-        image: jihyun2ee/friend:0.4
+        image: jihyun2ee/friend:0.5
         envFrom:
         - secretRef:
             name: friend-secret
