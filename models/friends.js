@@ -56,20 +56,20 @@ const getUserIDInFriend = async (user1ID, user2ID) => {
     return rows;
 };
 
-//receivedFriendRequestsList
-const getReceivedFriendRequestsList = async (userId) => {
+//receivedFriendRequestsList: 나한테 친구 신청한 유저 리스트
+const getReceivedFriendRequestsList = async (userID) => {
     let sql = `
         SELECT friendID AS friendID, user1ID AS userID
         FROM friend
-        WHERE user2ID = ? AND (accepted = 0 OR accepted = 2);
+        WHERE user2ID = ? AND accepted = 2;
     `;
 
-    let [rows] = await db.execute(sql, [userId]);
+    let [rows] = await db.execute(sql, [userID]);
     console.log(rows);
     return rows;
 }
 
-//friendRequestPOST
+//friendRequestPOST: 친구 요청 누르는
 const postFriendRequest = async (senderID, receiverID) => {
     let sql = `
         INSERT INTO friend (user1ID, user2ID, accepted) VALUES (?, ?, ?);
@@ -93,7 +93,7 @@ const postFriendRequest = async (senderID, receiverID) => {
         if(conn) conn.release(); //커넥션 반환
     }
 }
-//friendRequestAcceptedPATCH
+//friendRequestAcceptedPATCH : 친구 수락
 const patchFriendRequest = async (receiverID, senderID) => {
     let sql = `
         UPDATE friend
